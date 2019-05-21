@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zipkin-server
+  namespace: team-a-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: zipkin-server
+  template:
+    metadata:
+      namespace: team-a-dev
+      labels:
+        k8s-app: zipkin-server
+    spec:
+      containers:
+      - name: zipkin-server
+        image: openzipkin/zipkin:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9411
+      imagePullSecrets:
+      - name: ecr-secret
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: team-a-dev
+  name: zipkin-server
+spec:
+  selector:
+    k8s-app: zipkin-server
+  ports:
+  - port: 9411
+    name: http
+    protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zipkin-server
+  namespace: team-a-dev
+spec:
+  rules:
+  - host: zipkin.team-a.cloud.school.thoughtworks.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zipkin-server
+          servicePort: 9411
