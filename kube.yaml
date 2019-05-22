@@ -20,8 +20,6 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9411
-      imagePullSecrets:
-        - name: ecr-secret
 ---
 kind: Service
 apiVersion: v1
