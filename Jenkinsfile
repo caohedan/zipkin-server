@@ -1,7 +1,6 @@
 node{
     stage('Checkout') {
-        git url: 'https://github.com/tw-cloud-native/zipkin-server.git',
-            branch: 'master'
+        checkout scm
     }
 
     withEnv([
